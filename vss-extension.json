@@ -2,7 +2,7 @@
     "manifestVersion": 1,
     "id": "safeer-accuknox-iac",
     "name": "AccuKnox IAC",
-    "version": "0.1.11",
+    "version": "0.1.12",
     "publisher": "safeer-accuknox",
     "targets": [
         {

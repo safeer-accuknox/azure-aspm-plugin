@@ -2,12 +2,17 @@ trigger:
 - main
 
 pool:
-  vmImage: ubuntu-latest
-
+  name: selfhosted
+  
 steps:
 - script: echo Hello, world!
   displayName: 'Run a one-line script'
-
-- task: safeer-accuknox-iac@0
+    
+- task: safeer-accuknox-iac@0.1.11
   inputs:
-    samplestring: 'TEST'
+    accuknoxEndpoint: '<ACCUKNOX_ENDPOINT>'
+    accuknoxTenantId: '<ACCUKNOX_TENANT_ID>'
+    accuknoxToken: '<ACCUKNOX_TOKEN>'
+    accuknoxLabel: '<ACCUKNOX_LABEL>'
+    inputQuiet: true
+    inputCompact: true

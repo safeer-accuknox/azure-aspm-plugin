@@ -106,11 +106,8 @@ export default class IaCScan {
 
       fs.writeFileSync(resultFile, JSON.stringify(enhancedData, null, 2));
 
-      console.log('Vars:');
-      console.log('Processed File Contents:');
-      console.log(fs.readFileSync(resultFile, 'utf-8'));
-
-
+      // console.log('Processed File Contents:');
+      // console.log(fs.readFileSync(resultFile, 'utf-8'));
       console.log('Result file processed successfully.');
     } catch (error) {
       console.error(`Error processing result file: ${error}`);
