@@ -1,39 +1,42 @@
 {
     "manifestVersion": 1,
-    "id": "my-first-extension",
+    "id": "safeer-accuknox-iac",
+    "name": "AccuKnox IAC",
+    "version": "0.0.1",
     "publisher": "safeer-accuknox",
-    "version": "1.0.0",
-    "name": "My First Extension",
-    "description": "A sample Visual Studio Services extension",
-    "public": false,
-    "categories": ["Azure Repos"],
     "targets": [
         {
             "id": "Microsoft.VisualStudio.Services"
         }
+    ],    
+    "description": "AccuKnox IAC task for scanning web applications.",
+    "categories": [
+        "Azure Pipelines"
+    ],
+    "icons": {
+        "default": "images/logo.png"        
+    },
+    "files": [
+        {
+            "path": "IAC"
+        }
     ],
     "contributions": [
         {
-            "id": "my-hub",
-            "type": "ms.vss-web.hub",
+            "id": "safeer-accuknox-iac",
+            "type": "ms.vss-distributed-task.task",
             "targets": [
-                "ms.vss-code-web.code-hub-group"
+                "ms.vss-distributed-task.tasks"
             ],
             "properties": {
-                "name": "My Hub",
-                "uri": "my-hub.html"
+                "name": "IAC"
             }
         }
     ],
-    "files": [
-        {
-            "path": "my-hub.html",
-            "addressable": true
-        },
-        {
-            "path": "node_modules/azure-devops-extension-sdk",
-            "addressable": true,
-            "packagePath": "lib"
+    "public": false,
+    "content": {
+        "details": {
+            "path": "overview.md"
         }
-    ]
+    }
 }
