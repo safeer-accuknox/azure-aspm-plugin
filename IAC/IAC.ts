@@ -3,6 +3,7 @@ import * as path from 'path';
 import { exec } from 'child_process';
 import * as axios from 'axios';
 import * as process from 'process';
+import FormData from 'form-data';
 
 export interface IaCScanInputs {
   inputFile?: string;
@@ -20,35 +21,37 @@ export interface IaCScanInputs {
 
 export default class IaCScan {
   private inputs: IaCScanInputs;
+  private checkovWrkDir: string;
 
   constructor(inputs: IaCScanInputs) {
     this.inputs = inputs;
     this.inputs.outputFormat = this.inputs.outputFormat || 'json';
-    this.inputs.outputFilePath = this.inputs.outputFilePath || './results';
+    this.checkovWrkDir = '/results';
   }
 
-  async run(): Promise<void> {
+  async run(): Promise<number> {
     try {
       console.log('Starting IaC Scan...');
-      await this.runIaCScan();
-    //   await this.processResultFile();
-    //   await this.uploadResults();
+      const exitCode = await this.runIaCScan();
+      await this.processResultFile();
+      await this.uploadResults();
+      return exitCode
     } catch (error) {
       console.error(`Error during IaC scan: ${error}`);
       throw error;
     }
   }
 
-  private runIaCScan(): Promise<void> {
+  private runIaCScan(): Promise<number> {
     return new Promise((resolve, reject) => {
-      const checkovCmd: string[] = ['checkov'];
+      const checkovCmd: string[] = [`docker run --rm -v $PWD:${this.checkovWrkDir} ghcr.io/bridgecrewio/checkov:3.2.21`];
 
       if (this.inputs.inputFile) {
-        checkovCmd.push('-f', this.inputs.inputFile);
+        checkovCmd.push('-f', `${this.checkovWrkDir}/${this.inputs.inputFile}`);
       }
 
       if (this.inputs.inputDirectory) {
-        checkovCmd.push('-d', this.inputs.inputDirectory);
+        checkovCmd.push('-d', `${this.checkovWrkDir}/${this.inputs.inputDirectory}`);
       }
 
       if (this.inputs.compact) {
@@ -63,9 +66,7 @@ export default class IaCScan {
         checkovCmd.push('-o', this.inputs.outputFormat);
       }
 
-      if (this.inputs.outputFilePath) {
-        checkovCmd.push('--output-file-path', this.inputs.outputFilePath);
-      }
+      checkovCmd.push('--output-file-path', this.checkovWrkDir);
 
       if (this.inputs.framework) {
         checkovCmd.push('--framework', this.inputs.framework);
@@ -74,19 +75,22 @@ export default class IaCScan {
       console.log(`Executing command: ${checkovCmd.join(' ')}`);
 
       exec(checkovCmd.join(' '), (error, stdout, stderr) => {
+        console.log(`Output: ${stdout}`);
         if (error) {
-          console.error(`Error executing Checkov: ${stderr}`);
-          return reject(error);
+          console.error(`IaC Scan failed: ${stderr}`);
+          resolve(1); 
+        } else {
+          resolve(0); 
         }
-        console.log(stdout);
-        resolve();
       });
     });
   }
 
   private async processResultFile(): Promise<void> {
     try {
-      const resultFile = path.join(this.inputs.outputFilePath!, 'results_json.json');
+      const checkovFile = 'results_json.json';
+      const resultFile = 'results.json';
+      fs.copyFileSync(checkovFile, resultFile);
       const data = JSON.parse(fs.readFileSync(resultFile, 'utf-8'));
 
       const repoLink = process.env['BUILD_REPOSITORY_URI'] || 'unknown_repo';
@@ -101,6 +105,12 @@ export default class IaCScan {
       });
 
       fs.writeFileSync(resultFile, JSON.stringify(enhancedData, null, 2));
+
+      console.log('Vars:');
+      console.log('Processed File Contents:');
+      console.log(fs.readFileSync(resultFile, 'utf-8'));
+
+
       console.log('Result file processed successfully.');
     } catch (error) {
       console.error(`Error processing result file: ${error}`);
@@ -110,16 +120,19 @@ export default class IaCScan {
 
   private async uploadResults(): Promise<void> {
     try {
-      const resultFile = path.join(this.inputs.outputFilePath!, 'results_json.json');
+      const resultFile = 'results.json';
       const fileStream = fs.createReadStream(resultFile);
+      const formData = new FormData();
+      formData.append('file', fileStream);
 
       const response = await axios.default.post(
         `https://${this.inputs.endpoint}/api/v1/artifact/`,
-        fileStream,
+        formData,
         {
           headers: {
             'Tenant-Id': this.inputs.tenantId,
             Authorization: `Bearer ${this.inputs.token}`,
+            ...formData.getHeaders(), 
           },
           params: {
             tenant_id: this.inputs.tenantId,
@@ -129,7 +142,7 @@ export default class IaCScan {
           },
         }
       );
-
+  
       console.log(`Upload successful. Response: ${response.status}`);
     } catch (error) {
       console.error(`Error uploading results: ${error}`);

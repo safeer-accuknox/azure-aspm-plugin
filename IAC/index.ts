@@ -8,7 +8,7 @@ import IaCScan, { IaCScanInputs } from './IAC';
             inputDirectory: tl.getInput('inputDirectory', false) || './', 
             compact: tl.getBoolInput('inputCompact', false) || false, 
             quiet: tl.getBoolInput('inputQuiet', false) || false,
-            framework: tl.getInput('inputFramework', false) || 'defaultFramework', 
+            framework: tl.getInput('inputFramework', false), 
             outputFormat: 'json',
             outputFilePath: './results',
             endpoint: tl.getInput('accuknoxEndpoint', true) as string, 
@@ -19,10 +19,12 @@ import IaCScan, { IaCScanInputs } from './IAC';
 
         const scan = new IaCScan(inputs);
 
-        scan.run().catch((err) => {
+        const exitCode = scan.run().catch((err) => {
             console.error('Pipeline failed.', err);
             tl.setResult(tl.TaskResult.Failed, err.message);
         });
+
+        console.log("exitCode",  exitCode)
     }
     catch (err:any) {
         tl.setResult(tl.TaskResult.Failed, err.message);

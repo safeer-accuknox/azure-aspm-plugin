@@ -2,7 +2,7 @@
 
 ## Notes
 - run `tsc` to convert index.ts to index.js
-- `npx tfx-cli extension create` tp create the vsix file (plugin)
+- `npx tfx-cli extension create` tp create the vsix file (plugin) (change the version in task.json and vss-extentions)
 - self hosted agent is need for unpaid plans
 
 
