@@ -1,5 +1,5 @@
 {
-  "name": "code",
+  "name": "safeer-accuknox-iac",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -11,5 +11,11 @@
   "license": "ISC",
   "dependencies": {
     "azure-devops-extension-sdk": "^4.0.2"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.10",
+    "@types/node": "^22.10.5",
+    "@types/q": "^1.5.8",
+    "sync-request": "^6.1.0"
   }
 }
