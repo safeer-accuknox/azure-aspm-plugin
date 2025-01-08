@@ -10,17 +10,76 @@
     "version": {
         "Major": 0,
         "Minor": 1,
-        "Patch": 0
+        "Patch": 1
     },
     "instanceNameFormat": "AccuKnox IAC",
     "inputs": [
         {
-            "name": "samplestring",
+            "name": "inputFile",
             "type": "string",
-            "label": "Sample String",
+            "label": "File",
             "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Specify a file for scanning (e.g., '.tf' for Terraform). Cannot be used with directory input."
+        },
+        {
+            "name": "inputDirectory",
+            "type": "string",
+            "label": "Directory",
+            "defaultValue": ".",
+            "required": false,
+            "helpMarkDown": "Directory with infrastructure code and/or package manager files to scan."
+        },
+        {
+            "name": "inputCompact",
+            "type": "boolean",
+            "label": "Compact",
+            "defaultValue": false,
+            "required": false,
+            "helpMarkDown": "Do not display code blocks in the output"
+        },
+        {
+            "name": "inputQuiet",
+            "type": "boolean",
+            "label": "Quiet",
+            "defaultValue": false,
+            "required": false,
+            "helpMarkDown": "Display only failed checks"
+        },
+        {
+            "name": "inputFramework",
+            "type": "string",
+            "label": "Framework",
+            "required": false,
+            "helpMarkDown": "Run only on a specific infrastructure (e.g., Kubernetes or Terraform)"
+        },
+        {
+            "name": "accuknoxEndpoint",
+            "type": "string",
+            "label": "AccuKnox API Endpoint",
             "required": true,
-            "helpMarkDown": "A sample string"
+            "helpMarkDown": "The URL of the CSPM panel to push the scan results to"
+        },
+        {
+            "name": "accuknoxTenantId",
+            "type": "string",
+            "label": "AccuKnox Tenant ID",
+            "required": true,
+            "helpMarkDown": "The ID of the tenant associated with the CSPM panel"
+        },
+        {
+            "name": "accuknoxToken",
+            "type": "string",
+            "label": "AccuKnox Token",
+            "required": true,
+            "helpMarkDown": "The token for authenticating with the CSPM panel"
+        },
+        {
+            "name": "accuknoxLabel",
+            "type": "string",
+            "label": "AccuKnox Label",
+            "required": true,
+            "helpMarkDown": "The label created in AccuKnox SaaS for associating scan results"
         }
     ],
     "execution": {

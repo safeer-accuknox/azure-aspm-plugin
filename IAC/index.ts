@@ -1,17 +1,32 @@
 import tl = require('azure-pipelines-task-lib/task');
+import IaCScan, { IaCScanInputs } from './IAC';
 
  async function run() {
-     try {
-         const inputString: string | undefined = tl.getInput('samplestring', true);
-         if (inputString == 'bad') {
-             tl.setResult(tl.TaskResult.Failed, 'Bad input was given');
-             return;
-         }
-         console.log('Hello', inputString);
-     }
-     catch (err:any) {
-         tl.setResult(tl.TaskResult.Failed, err.message);
-     }
+    try {
+        const inputs: IaCScanInputs = {
+            inputFile: tl.getInput('inputFile', false) || '', 
+            inputDirectory: tl.getInput('inputDirectory', false) || './', 
+            compact: tl.getBoolInput('inputCompact', false) || false, 
+            quiet: tl.getBoolInput('inputQuiet', false) || false,
+            framework: tl.getInput('inputFramework', false) || 'defaultFramework', 
+            outputFormat: 'json',
+            outputFilePath: './results',
+            endpoint: tl.getInput('accuknoxEndpoint', true) as string, 
+            tenantId: tl.getInput('accuknoxTenantId', true) as string, 
+            label: tl.getInput('accuknoxLabel', true) as string, 
+            token: tl.getInput('accuknoxToken', true) as string, 
+        };
+
+        const scan = new IaCScan(inputs);
+
+        scan.run().catch((err) => {
+            console.error('Pipeline failed.', err);
+            tl.setResult(tl.TaskResult.Failed, err.message);
+        });
+    }
+    catch (err:any) {
+        tl.setResult(tl.TaskResult.Failed, err.message);
+    }
  }
 
  run();
