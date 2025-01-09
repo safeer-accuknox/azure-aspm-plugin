@@ -10,7 +10,7 @@
     "version": {
         "Major": 0,
         "Minor": 1,
-        "Patch": 12
+        "Patch": 14
     },
     "instanceNameFormat": "AccuKnox IAC",
     "inputs": [
@@ -80,6 +80,14 @@
             "label": "AccuKnox Label",
             "required": true,
             "helpMarkDown": "The label created in AccuKnox SaaS for associating scan results"
+        },
+        {
+            "name": "inputSoftFail",
+            "type": "boolean",
+            "label": "Soft Fail",
+            "defaultValue": false,
+            "required": false,
+            "helpMarkDown": "Do not return an error code if there are failed checks."
         }
     ],
     "execution": {

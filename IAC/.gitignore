@@ -135,6 +135,5 @@ dist
 .yarn/install-state.gz
 .pnp.*
 .taskkey
-index.js
-index.js
-IAC.js
+*.js
+.js

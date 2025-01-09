@@ -1,9 +1,8 @@
 import * as fs from 'fs';
-import * as path from 'path';
 import { exec } from 'child_process';
-import * as axios from 'axios';
 import * as process from 'process';
-import FormData from 'form-data';
+
+const RESULTFILE = 'results.json';
 
 export interface IaCScanInputs {
   inputFile?: string;
@@ -13,10 +12,11 @@ export interface IaCScanInputs {
   framework?: string;
   outputFormat?: string;
   outputFilePath?: string;
-  endpoint: string;
-  tenantId: string;
-  label: string;
-  token: string;
+}
+
+interface IaCScanOuputs {
+  exitCode: number;
+  resultFile: string;
 }
 
 export default class IaCScan {
@@ -29,16 +29,15 @@ export default class IaCScan {
     this.checkovWrkDir = '/results';
   }
 
-  async run(): Promise<number> {
+  async run(): Promise<IaCScanOuputs> {
     try {
       console.log('Starting IaC Scan...');
       const exitCode = await this.runIaCScan();
       await this.processResultFile();
-      await this.uploadResults();
-      return exitCode
+      return { exitCode, resultFile: RESULTFILE };
     } catch (error) {
       console.error(`Error during IaC scan: ${error}`);
-      throw error;
+      return { exitCode: 1, resultFile: RESULTFILE };
     }
   }
 
@@ -72,8 +71,7 @@ export default class IaCScan {
         checkovCmd.push('--framework', this.inputs.framework);
       }
 
-      console.log(`Executing command: ${checkovCmd.join(' ')}`);
-
+      // console.log(`Executing command: ${checkovCmd.join(' ')}`);
       exec(checkovCmd.join(' '), (error, stdout, stderr) => {
         console.log(`Output: ${stdout}`);
         if (error) {
@@ -89,7 +87,7 @@ export default class IaCScan {
   private async processResultFile(): Promise<void> {
     try {
       const checkovFile = 'results_json.json';
-      const resultFile = 'results.json';
+      const resultFile = RESULTFILE;
       fs.copyFileSync(checkovFile, resultFile);
       const data = JSON.parse(fs.readFileSync(resultFile, 'utf-8'));
 
@@ -111,38 +109,6 @@ export default class IaCScan {
       console.log('Result file processed successfully.');
     } catch (error) {
       console.error(`Error processing result file: ${error}`);
-      throw error;
-    }
-  }
-
-  private async uploadResults(): Promise<void> {
-    try {
-      const resultFile = 'results.json';
-      const fileStream = fs.createReadStream(resultFile);
-      const formData = new FormData();
-      formData.append('file', fileStream);
-
-      const response = await axios.default.post(
-        `https://${this.inputs.endpoint}/api/v1/artifact/`,
-        formData,
-        {
-          headers: {
-            'Tenant-Id': this.inputs.tenantId,
-            Authorization: `Bearer ${this.inputs.token}`,
-            ...formData.getHeaders(), 
-          },
-          params: {
-            tenant_id: this.inputs.tenantId,
-            data_type: 'IAC',
-            label_id: this.inputs.label,
-            save_to_s3: 'false',
-          },
-        }
-      );
-  
-      console.log(`Upload successful. Response: ${response.status}`);
-    } catch (error) {
-      console.error(`Error uploading results: ${error}`);
       throw error;
     }
   }
