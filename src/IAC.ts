@@ -3,6 +3,7 @@ import { exec } from 'child_process';
 import * as process from 'process';
 
 const RESULTFILE = 'results.json';
+const CHECKOV_IMAGE = 'bridgecrew/checkov:latest'
 
 export interface IaCScanInputs {
   inputFile?: string;
@@ -32,6 +33,7 @@ export default class IaCScan {
   async run(): Promise<IaCScanOuputs> {
     try {
       console.log('Starting IaC Scan...');
+      await this.pullDockerImage();
       const exitCode = await this.runIaCScan();
       await this.processResultFile();
       return { exitCode, resultFile: RESULTFILE };
@@ -41,9 +43,23 @@ export default class IaCScan {
     }
   }
 
+  private pullDockerImage(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const checkovCmd: string[] = [`docker pull ${CHECKOV_IMAGE}`];
+      exec(checkovCmd.join(' '), (error, stdout, stderr) => {
+        if (error) {
+          console.warn(`Warning: Failed to pull Docker image: ${stderr}`);
+        } else {
+          console.log(`Docker image pulled successfully: ${stdout}`);
+        }
+        resolve();
+      });
+    });
+  }
+
   private runIaCScan(): Promise<number> {
     return new Promise((resolve, reject) => {
-      const checkovCmd: string[] = [`docker run --rm -v $PWD:${this.checkovWrkDir} ghcr.io/bridgecrewio/checkov:3.2.21`];
+      const checkovCmd: string[] = [`docker run --rm -v $PWD:${this.checkovWrkDir} ${CHECKOV_IMAGE}`];
 
       if (this.inputs.inputFile) {
         checkovCmd.push('-f', `${this.checkovWrkDir}/${this.inputs.inputFile}`);
