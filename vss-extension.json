@@ -2,7 +2,7 @@
     "manifestVersion": 1,
     "id": "safeer-accuknox-secret-scan",
     "name": "AccuKnox Secret Scan",
-    "version": "0.0.4",
+    "version": "0.0.11",
     "publisher": "safeer-accuknox",
     "targets": [
         {

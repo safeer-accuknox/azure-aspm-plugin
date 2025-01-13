@@ -57,6 +57,7 @@ export default class SecretScan {
     return new Promise((resolve, reject) => {
       const truffleHogCmd: string[] = [`docker run --rm -v $PWD:${this.truffleHogWrkDir} ${TRUFFLEHOG_IMAGE} git file://${this.truffleHogWrkDir} --json --no-update`];
 
+      truffleHogCmd.push('--fail');
       if (this.inputs.results) {
         truffleHogCmd.push('--results', this.inputs.results);
       }
@@ -70,10 +71,8 @@ export default class SecretScan {
         branchFlag = '';
       } else if (this.inputs.branch) {
         branchFlag = `--branch=${this.inputs.branch}`;
-      } else if (process.env.SYSTEM_PULLREQUEST_SOURCEBRANCH) {
-        branchFlag = `--branch=${process.env.SYSTEM_PULLREQUEST_SOURCEBRANCH}`;
-      } else if (process.env.BUILD_SOURCEBRANCHNAME) {
-        branchFlag = `--branch=${process.env.BUILD_SOURCEBRANCHNAME}`;
+      } else if (process.env.BUILD_SOURCEVERSION) {
+        branchFlag = `--branch=${process.env.BUILD_SOURCEVERSION}`;
       }
 
       if (branchFlag) {
@@ -85,7 +84,7 @@ export default class SecretScan {
       }
 
       truffleHogCmd.push(`> ${RESULTFILE}`);
-      exec(truffleHogCmd.join(' '), (error: any, stdout: any, stderr: any) => {
+      exec(truffleHogCmd.join(' '), (error, stdout, stderr) => {
         console.log(`Output: ${stdout}`);
         if (error) {
           console.error(`Secret Scan failed: ${stderr}`);
