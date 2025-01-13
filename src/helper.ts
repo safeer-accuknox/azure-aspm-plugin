@@ -32,7 +32,7 @@ export default class Helper {
           },
           params: {
             tenant_id: inputs.tenantId,
-            data_type: 'IAC',
+            data_type: 'TruffleHog',
             label_id: inputs.label,
             save_to_s3: 'false',
           },

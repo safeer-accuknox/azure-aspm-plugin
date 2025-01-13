@@ -1,15 +1,15 @@
 {
     "manifestVersion": 1,
-    "id": "safeer-accuknox-iac",
-    "name": "AccuKnox IAC",
-    "version": "0.1.20",
+    "id": "safeer-accuknox-secret-scan",
+    "name": "AccuKnox Secret Scan",
+    "version": "0.0.4",
     "publisher": "safeer-accuknox",
     "targets": [
         {
             "id": "Microsoft.VisualStudio.Services"
         }
     ],    
-    "description": "AccuKnox IAC task for scanning web applications.",
+    "description": "AccuKnox Secret Scan task designed to scan and identify secrets in Git repositories.",
     "categories": [
         "Azure Pipelines"
     ],
@@ -23,7 +23,7 @@
     ],
     "contributions": [
         {
-            "id": "safeer-accuknox-iac",
+            "id": "safeer-accuknox-secret-scan",
             "type": "ms.vss-distributed-task.task",
             "targets": [
                 "ms.vss-distributed-task.tasks"

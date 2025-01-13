@@ -4,6 +4,8 @@
 - **Package the Extension**: Move back to the root directory. Use `npx tfx-cli extension create` to generate the `.vsix` file (plugin package). Ensure the version in `task.json` and `vss-extension.json` is updated before creating the package.
 - **Upload to Marketplace**: After generating the .vsix file, upload it to the Visual Studio Marketplace
 
+- **Private**: Private plugin needs to be shared to organization and installed it to test it.
+
 ## Reference Links
 
 - [Getting Started with Azure DevOps Extensions (Node.js)](https://learn.microsoft.com/en-us/azure/devops/extend/get-started/node?view=azure-devops)

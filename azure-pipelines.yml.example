@@ -8,11 +8,10 @@ steps:
 - script: echo Hello, world!
   displayName: 'Run a one-line script'
     
-- task: safeer-accuknox-iac@0.1.11
+- task: safeer-accuknox-secret-scan@0
   inputs:
     accuknoxEndpoint: '<ACCUKNOX_ENDPOINT>'
     accuknoxTenantId: '<ACCUKNOX_TENANT_ID>'
     accuknoxToken: '<ACCUKNOX_TOKEN>'
     accuknoxLabel: '<ACCUKNOX_LABEL>'
-    inputQuiet: true
-    inputCompact: true
+    inputSoftFail: true

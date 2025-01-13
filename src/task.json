@@ -1,57 +1,50 @@
 {
     "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
-    "id": "6970ef26-4b93-4ae6-8175-e1e6c910f5dd",
-    "name": "safeer-accuknox-iac",
-    "friendlyName": "AccuKnox IAC",
-    "description": "AccuKnox IAC task for scanning web applications.",
-    "helpMarkDown": "AccuKnox IAC task for scanning web applications.",
+    "id": "288016a5-ab38-48a5-9676-8021eec03eb6",
+    "name": "safeer-accuknox-secret-scan",
+    "friendlyName": "AccuKnox Secret Scan",
+    "description": "AccuKnox Secret Scan task designed to scan and identify secrets in Git repositories.",
+    "helpMarkDown": "AccuKnox Secret Scan task designed to scan and identify secrets in Git repositories.",
     "category": "Utility",
     "author": "safeer-accuknox",
     "version": {
         "Major": 0,
-        "Minor": 1,
-        "Patch": 20
+        "Minor": 0,
+        "Patch": 4
     },
-    "instanceNameFormat": "AccuKnox IAC",
+    "instanceNameFormat": "AccuKnox Secret Scan",
     "inputs": [
         {
-            "name": "inputFile",
+            "name": "results",
             "type": "string",
-            "label": "File",
+            "label": "Results",
             "defaultValue": "",
             "required": false,
-            "helpMarkDown": "Specify a file for scanning (e.g., '.tf' for Terraform). Cannot be used with directory input."
+            "helpMarkDown": "Specifies which type(s) of results to output: verified, unknown, unverified, filtered_unverified. Defaults to all types."
         },
         {
-            "name": "inputDirectory",
+            "name": "branch",
             "type": "string",
-            "label": "Directory",
-            "defaultValue": ".",
+            "label": "Branch",
+            "defaultValue": "",
             "required": false,
-            "helpMarkDown": "Directory with infrastructure code and/or package manager files to scan."
+            "helpMarkDown": "The branch to scan. Use all-branches to scan all branches."
         },
         {
-            "name": "inputCompact",
-            "type": "boolean",
-            "label": "Compact",
-            "defaultValue": false,
-            "required": false,
-            "helpMarkDown": "Do not display code blocks in the output"
-        },
-        {
-            "name": "inputQuiet",
-            "type": "boolean",
-            "label": "Quiet",
-            "defaultValue": false,
-            "required": false,
-            "helpMarkDown": "Display only failed checks"
-        },
-        {
-            "name": "inputFramework",
+            "name": "excludePaths",
             "type": "string",
-            "label": "Framework",
+            "label": "Exclude Paths",
+            "defaultValue": "",
             "required": false,
-            "helpMarkDown": "Run only on a specific infrastructure (e.g., Kubernetes or Terraform)"
+            "helpMarkDown": "Paths to exclude from the scan."
+        },
+        {
+            "name": "additionalArguments",
+            "type": "string",
+            "label": "Additional Arguments",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Extra parameters for secret scanning."
         },
         {
             "name": "accuknoxEndpoint",
