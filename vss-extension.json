@@ -1,35 +1,39 @@
 {
     "manifestVersion": 1,
-    "id": "safeer-accuknox-secret-scan",
-    "name": "AccuKnox Secret Scan",
-    "version": "0.0.11",
+    "id": "safeer-accuknox-SAST",
+    "name": "AccuKnox SAST",
+    "version": "1.0.1",
     "publisher": "safeer-accuknox",
     "targets": [
         {
             "id": "Microsoft.VisualStudio.Services"
         }
     ],    
-    "description": "AccuKnox Secret Scan task designed to scan and identify secrets in Git repositories.",
+    "description": "AccuKnox SAST extension for scanning source code.",
     "categories": [
         "Azure Pipelines"
     ],
     "icons": {
-        "default": "images/logo.png"        
+        "default": "images/logo.png"
     },
     "files": [
         {
-            "path": "src"
+            "path": "SAST"
+        },
+        {
+            "path": "images",
+            "addressable": true
         }
     ],
     "contributions": [
         {
-            "id": "safeer-accuknox-secret-scan",
+            "id": "safeer-accuknox-SAST",
             "type": "ms.vss-distributed-task.task",
             "targets": [
                 "ms.vss-distributed-task.tasks"
             ],
             "properties": {
-                "name": "src"
+                "name": "SAST"
             }
         }
     ],

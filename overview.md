@@ -1,31 +1,75 @@
-# AccuKnox Secret Scan Extension for Azure DevOps
+# AccuKnox SAST Azure DevOps extension
 
-The secret scanning section of the GitLab CI/CD pipeline is designed to integrate with AccuKnox to scan for hardcoded secrets and sensitive information in the git repositories.
+[Learn more about AccuKnox](https://www.accuknox.com/)
 
-Here's the table that outlines the inputs and their descriptions, along with default values:
+## Description
 
-| **Input Value**         | **Description**                                                                                     | **Default Value**                  |
-| ------------------------ | --------------------------------------------------------------------------------------------------- | ---------------------------------- |
-| **results**             | Specifies which type(s) of results to output: `verified`, `unknown`, `unverified`, `filtered_unverified`. Defaults to all types. | `""`                               |
-| **branch**              | The branch to scan. Use `all-branches` to scan all branches.                                        | `""`                               |
-| **excludePaths**       | Paths to exclude from the scan.                                                                     | `""`                               |
-| **additionalArguments**| Extra parameters for secret scanning.                                                               | `""`                               |
-| **inputSoftFail**     | Do not return an error code if secrets are found.                                                   | `true`                             |
-| **accuknoxToken**      | The token for authenticating with the CSPM panel.                                                   | N/A (Required)                     |
-| **accuknoxTenantId**     | The ID of the tenant associated with the CSPM panel.                                                | N/A (Required)                     |
-| **accuknoxEndpoint**   | The URL of the CSPM panel to push the scan results to.                                              | N/A (Required)           |
-| **accuknoxLabel**      | The label created in AccuKnox SaaS for associating scan results.                                     | N/A (Required)                     |
+This extension runs a Static Application Security Test (SAST) using SonarQube,
+then uploads the generated report to the AccuKnox CSPM panel. The extension can be
+configured with specific inputs to integrate seamlessly with your DevSecOps pipeline.
 
-#### Example
+## How to use it?
+
+1. **Add the following task into your pipeline:**
 
 ```yaml
-- task: safeer-accuknox-secret-scan@0
+- task: AccuKnox-SAST@0
   inputs:
-    accuknoxEndpoint: '<ACCUKNOX_ENDPOINT>'
-    accuknoxTenantId: '<ACCUKNOX_TENANT_ID>'
-    accuknoxToken: '<ACCUKNOX_TOKEN>'
-    accuknoxLabel: '<ACCUKNOX_LABEL>'
-    inputSoftFail: true
+    sonarQubeUrl: $(sonarQubeUrl)
+    sonarQubeToken: $(sonarQubeToken)
+    sonarQubeProjectKey: $(sonarQubeProjectKey)
+    accuknoxEndpoint: $(accuknoxEndpoint)
+    accuknoxTenantId: $(accuknoxTenantId)
+    accuknoxToken: $(accuknoxToken)
+    accuknoxLabel: $(accuknoxLabel)
+    qualityGate: $(qualityGate)
+    skipSonarQubeScan: $(skipSonarQubeScan)
 ```
 
-This example defines a job for secret scanning and then uploads scan results to the AccuKnox platform
+2. **Generate the AccuKnox API token:**
+
+For generating the token, open up the AccuKnox UI. And navigate to the settings >
+tokens and click on the create button.
+
+![Screenshot of the AccuKnox tokens page](images/token-1.png)
+
+<br>
+Give your token a name and set the expiry date according to your needs.
+Click on the generate button.
+
+![Screenshot of the AccuKnox tokens page](images/token-2.png)
+
+<br>
+Copy and note down the tenant id and token.
+
+![Screenshot of the AccuKnox tokens page](images/token-3.png)
+
+<br>
+Store the token as a secret in Azure DevOps.
+
+## Input values
+
+| Input Value | Required | Default Value | Description |
+|-------------|----------|---------------|-------------|
+| `sonarQubeUrl` | Yes | None | URL of the SonarQube server. eg. `https://sonarqube.example.com` |
+| `sonarQubeToken` | Yes | None | SonarQube user token. |
+| `sonarQubeProjectKey` | Yes | None | Project key of your SonarQube project. |
+| `sonarQubeOrganizationId` | No | None | It is required if your are using SonarQubeCloud. |
+| `accuknoxEndpoint` | Yes | None | AccuKnox domain for sending DAST report. eg. `cspm.demo.accuknox.com`, `cspm.accuknox.com` |
+| `accuknoxTenantId` | Yes | None | Your AccuKnox tenant ID. You can see your tenant ID while creating an AccuKnox token. |
+| `accuknoxToken` | Yes | None | AccuKnox API token. |
+| `accuknoxLabel` | Yes | None | AccuKnox label to group similar findings together. |
+| `qualityGate` | No | `false` | Quality gate check to fail the build if the quality gate fails. Value should be boolean. |
+| `skipSonarQubeScan` | No | `false` | Skip SonarQube scan, for advanced users. Value should be boolean. |
+
+## How it Works
+
+- **SonarQube SAST**: The extension runs a SAST scan on the specified project using SonarQube.
+- **AccuKnox Report Generation**: After running the SAST scan it generates a report.
+- **Report Upload**: The generated report is uploaded to the AccuKnox CSPM panel for centralized monitoring and insights.
+- **Quality Gate Check**: Verifies if the project meets the set quality standards on SonarQube.
+
+## Notes
+
+- Ensure all necessary secrets are securely stored in an Azure DevOps variable group.
+- AccuKnox control plane provides a centralized view of all SAST results, enabling detailed security monitoring and analytics.

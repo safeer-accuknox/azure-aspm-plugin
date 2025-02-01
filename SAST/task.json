@@ -1,0 +1,102 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "fe2a0581-7f8e-432a-8c10-d1f17cbb3ecc",
+    "name": "safeer-accuknox-SAST",
+    "friendlyName": "AccuKnox SAST",
+    "description": "AccuKnox SAST task for scanning source code",
+    "helpMarkDown": "AccuKnox SAST task for scanning source code",
+    "category": "Utility",
+    "author": "safeer-accuknox",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 1
+    },
+    "instanceNameFormat": "safeer-accuknox-SAST",
+    "inputs": [
+        {
+            "name": "sonarQubeUrl",
+            "type": "string",
+            "label": "SonarQube URL",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "SonarQube server URL"
+        },
+        {
+            "name": "sonarQubeToken",
+            "type": "string",
+            "label": "SonarQube Token",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "SonarQube user token"
+        },
+        {
+            "name": "sonarQubeProjectKey",
+            "type": "string",
+            "label": "SonarQube Project Key",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "SonarQube project key"
+        },
+        {
+            "name": "accuknoxEndpoint",
+            "type": "string",
+            "label": "AccuKnox API Endpoint",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "AccuKnox API endpoint, eg. cspm.demo.accuknox.com, cspm.accuknox.com"
+        },
+        {
+            "name": "accuknoxTenantId",
+            "type": "string",
+            "label": "AccuKnox Tenant ID",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "AccuKnox tenant id, you can find the tenant id while creating an AccuKnox token"
+        },
+        {
+            "name": "accuknoxToken",
+            "type": "string",
+            "label": "AccuKnox Token",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "AccuKnox API token"
+        },
+        {
+            "name": "accuknoxLabel",
+            "type": "string",
+            "label": "AccuKnox Label",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "AccuKnox label"
+        },
+        {
+            "name": "qualityGate",
+            "type": "boolean",
+            "label": "Quality Gate (optional)",
+            "defaultValue": false,
+            "required": false,
+            "helpMarkDown": "Quality gate check to fail the build if the quality gate fails. Value should be boolean."
+        },
+        {
+            "name": "skipSonarQubeScan",
+            "type": "boolean",
+            "label": "Skip SonarQube Scan (optional)",
+            "defaultValue": false,
+            "required": false,
+            "helpMarkDown": "Skip SonarQube scan, for advanced users. Value should be boolean."
+        },
+        {
+            "name": "sonarQubeOrganizationId",
+            "type": "string",
+            "label": "SonarQube Organization Id (optional)",
+            "required": false,
+            "helpMarkDown": "It is required if your are using SonarQubeCloud"
+        }
+    ],
+    "execution": {
+        "Node20_1": {
+            "target": "index.js"
+        }
+    }
+    }
