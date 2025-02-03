@@ -2,7 +2,7 @@
     "manifestVersion": 1,
     "id": "safeer-accuknox-SAST",
     "name": "AccuKnox SAST",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "publisher": "safeer-accuknox",
     "targets": [
         {

@@ -53,7 +53,7 @@ async function runAccuKnoxSAST(sonarQubeUrl: string, sonarQubeToken: string, son
     -e SQ_PROJECTS=${sonarQubeProjectKey} \
     -e REPORT_PATH=/app/data \
     -v /tmp:/app/data \
-    accuknox/sastjob:latest`
+    accuknox/sastjob:1.0.0`
 
     if (sonarQubeOrganizationId && sonarQubeOrganizationId.trim() !== '') {
         command = `docker run --rm \
@@ -63,7 +63,7 @@ async function runAccuKnoxSAST(sonarQubeUrl: string, sonarQubeToken: string, son
         -e REPORT_PATH=/app/data \
         -e SQ_ORG="${sonarQubeOrganizationId}" \
         -v /tmp:/app/data \
-        accuknox/sastjob:latest`
+        accuknox/sastjob:1.0.0`
     }
 
     console.log('Running AccuKnox SAST job...');
