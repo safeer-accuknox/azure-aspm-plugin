@@ -14,4 +14,5 @@ steps:
     accuknoxTenantId: '<ACCUKNOX_TENANT_ID>'
     accuknoxToken: '<ACCUKNOX_TOKEN>'
     accuknoxLabel: '<ACCUKNOX_LABEL>'
+    accuknoxSaveToS3: true
     inputSoftFail: true

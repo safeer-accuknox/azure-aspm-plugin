@@ -3,6 +3,7 @@ import * as axios from 'axios';
 import FormData from 'form-data';
 
 export interface UploadResultsInputs {
+  saveToS3: boolean,
   resultFile: string;
   endpoint: string;
   tenantId: string;
@@ -34,7 +35,7 @@ export default class Helper {
             tenant_id: inputs.tenantId,
             data_type: 'TruffleHog',
             label_id: inputs.label,
-            save_to_s3: 'false',
+            save_to_s3: inputs.saveToS3,
           },
         }
       );

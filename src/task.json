@@ -1,6 +1,6 @@
 {
     "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
-    "id": "288016a5-ab38-48a5-9676-8021eec03eb6",
+    "id": "bf6a5afd-0a64-4d81-aeaa-559f5d095a6a",
     "name": "safeer-accuknox-secret-scan",
     "friendlyName": "AccuKnox Secret Scan",
     "description": "AccuKnox Secret Scan task designed to scan and identify secrets in Git repositories.",
@@ -10,7 +10,7 @@
     "version": {
         "Major": 0,
         "Minor": 0,
-        "Patch": 11
+        "Patch": 12
     },
     "instanceNameFormat": "AccuKnox Secret Scan",
     "inputs": [
@@ -73,6 +73,14 @@
             "label": "AccuKnox Label",
             "required": true,
             "helpMarkDown": "The label created in AccuKnox SaaS for associating scan results"
+        },
+        {
+            "name": "accuknoxSaveToS3",
+            "type": "boolean",
+            "label": "AccuKnox Save To S3",
+            "defaultValue": true,
+            "required": false,
+            "helpMarkDown": "Automates file saving to an S3 bucket integrated with the AccuKnox platform"
         },
         {
             "name": "inputSoftFail",

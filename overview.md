@@ -15,6 +15,7 @@ Here's the table that outlines the inputs and their descriptions, along with def
 | **accuknoxTenantId**     | The ID of the tenant associated with the CSPM panel.                                                | N/A (Required)                     |
 | **accuknoxEndpoint**   | The URL of the CSPM panel to push the scan results to.                                              | N/A (Required)           |
 | **accuknoxLabel**      | The label created in AccuKnox SaaS for associating scan results.                                     | N/A (Required)                     |
+| **accuknoxSaveToS3**    | Automates file saving to an S3 bucket integrated with the AccuKnox platform.                         | `true` (boolean)              |
 
 #### Example
 
@@ -25,6 +26,7 @@ Here's the table that outlines the inputs and their descriptions, along with def
     accuknoxTenantId: '<ACCUKNOX_TENANT_ID>'
     accuknoxToken: '<ACCUKNOX_TOKEN>'
     accuknoxLabel: '<ACCUKNOX_LABEL>'
+    accuknoxSaveToS3: true
     inputSoftFail: true
 ```
 
