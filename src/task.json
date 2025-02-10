@@ -1,6 +1,6 @@
 {
     "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
-    "id": "6970ef26-4b93-4ae6-8175-e1e6c910f5dd",
+    "id": "8fa8a617-9682-4cdf-be66-a6c8509af42c",
     "name": "safeer-accuknox-iac",
     "friendlyName": "AccuKnox IAC",
     "description": "AccuKnox IAC task for scanning web applications.",
@@ -10,7 +10,7 @@
     "version": {
         "Major": 0,
         "Minor": 1,
-        "Patch": 20
+        "Patch": 21
     },
     "instanceNameFormat": "AccuKnox IAC",
     "inputs": [

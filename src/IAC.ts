@@ -107,8 +107,8 @@ export default class IaCScan {
       fs.copyFileSync(checkovFile, resultFile);
       const data = JSON.parse(fs.readFileSync(resultFile, 'utf-8'));
 
-      const repoLink = process.env['BUILD_REPOSITORY_URI'] || 'unknown_repo';
-      const branch = process.env['BUILD_SOURCEBRANCHNAME'] || 'unknown_branch';
+      const repoLink = process.env['BUILD_REPOSITORY_URI_OVERRIDE'] || process.env['BUILD_REPOSITORY_URI'] || 'unknown_repo';
+      const branch = process.env['BUILD_SOURCEBRANCHNAME_OVERRIDE'] || process.env['BUILD_SOURCEBRANCHNAME'] || 'unknown_branch';
 
       const enhancedData = Array.isArray(data) ? data : [data];
       enhancedData.push({
