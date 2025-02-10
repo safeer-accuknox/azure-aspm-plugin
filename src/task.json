@@ -82,6 +82,14 @@
             "helpMarkDown": "The label created in AccuKnox SaaS for associating scan results"
         },
         {
+            "name": "accuknoxSaveToS3",
+            "type": "boolean",
+            "label": "AccuKnox Save To S3",
+            "defaultValue": true,
+            "required": false,
+            "helpMarkDown": "Automates file saving to an S3 bucket integrated with the AccuKnox platform"
+        },
+        {
             "name": "inputSoftFail",
             "type": "boolean",
             "label": "Soft Fail",

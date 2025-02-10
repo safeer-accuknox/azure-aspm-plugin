@@ -87,7 +87,7 @@ export default class IaCScan {
         checkovCmd.push('--framework', this.inputs.framework);
       }
 
-      // console.log(`Executing command: ${checkovCmd.join(' ')}`);
+      console.log(`Executing command: ${checkovCmd.join(' ')}`);
       exec(checkovCmd.join(' '), (error, stdout, stderr) => {
         console.log(`Output: ${stdout}`);
         if (error) {

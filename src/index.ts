@@ -26,6 +26,7 @@ import Helper, { UploadResultsInputs } from './helper';
             tenantId: tl.getInput('accuknoxTenantId', true) as string, 
             label: tl.getInput('accuknoxLabel', true) as string, 
             token: tl.getInput('accuknoxToken', true) as string, 
+            saveToS3: tl.getBoolInput('accuknoxSaveToS3', false) || true, 
             resultFile
         }
         await helper.uploadResults(uploadResults).catch((err) => {
