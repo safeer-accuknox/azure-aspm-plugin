@@ -1,5 +1,6 @@
 import tl = require('azure-pipelines-task-lib/task');
 import { exec } from 'child_process';
+import * as process from 'process';
 
 let qualityGateFailed = false;
 
@@ -22,27 +23,31 @@ function executeCommand(command: string): Promise<void> {
     });
 }
 
-async function runSonarQubeSAST(sonarQubeUrl: string, sonarQubeToken: string, sonarQubeProjectKey: string, qualityGate: boolean): Promise<void> {
+async function runSonarQubeSAST(
+    sonarQubeUrl: string, 
+    sonarQubeToken: string, 
+    sonarQubeProjectKey: string, 
+    qualityGate: boolean, 
+    sonarQubeOrganizationId?: string
+): Promise<void> {
+    const orgOption = (sonarQubeOrganizationId && sonarQubeOrganizationId.trim() !== '') ? `-Dsonar.organization=${sonarQubeOrganizationId}` : '';
+
     const commandWithQualityGate = `docker run --rm \
     -e SONAR_HOST_URL=${sonarQubeUrl}  \
     -e SONAR_TOKEN=${sonarQubeToken} \
-    -e SONAR_SCANNER_OPTS="-Dsonar.projectKey=${sonarQubeProjectKey} -Dsonar.qualitygate.wait=true" \
+    -e SONAR_SCANNER_OPTS="-Dsonar.projectKey=${sonarQubeProjectKey} ${orgOption} -Dsonar.qualitygate.wait=true" \
     -v "$(pwd):/usr/src" \
-    sonarsource/sonar-scanner-cli`
+    sonarsource/sonar-scanner-cli`;
 
     const command = `docker run --rm \
     -e SONAR_HOST_URL=${sonarQubeUrl}  \
     -e SONAR_TOKEN=${sonarQubeToken} \
-    -e SONAR_SCANNER_OPTS="-Dsonar.projectKey=${sonarQubeProjectKey}" \
+    -e SONAR_SCANNER_OPTS="-Dsonar.projectKey=${sonarQubeProjectKey} ${orgOption}" \
     -v "$(pwd):/usr/src" \
-    sonarsource/sonar-scanner-cli`
+    sonarsource/sonar-scanner-cli`;
 
     console.log('Running SonarQube SAST scan...');
-    if (qualityGate) {
-        await executeCommand(commandWithQualityGate);
-    } else {
-        await executeCommand(command);
-    }
+    await executeCommand(qualityGate ? commandWithQualityGate : command);
     console.log('SonarQube SAST scan completed.');
 }
 
@@ -53,7 +58,7 @@ async function runAccuKnoxSAST(sonarQubeUrl: string, sonarQubeToken: string, son
     -e SQ_PROJECTS=${sonarQubeProjectKey} \
     -e REPORT_PATH=/app/data \
     -v /tmp:/app/data \
-    accuknox/sastjob:1.0.0`
+    accuknox/sastjob:1.0.1`
 
     if (sonarQubeOrganizationId && sonarQubeOrganizationId.trim() !== '') {
         command = `docker run --rm \
@@ -63,7 +68,7 @@ async function runAccuKnoxSAST(sonarQubeUrl: string, sonarQubeToken: string, son
         -e REPORT_PATH=/app/data \
         -e SQ_ORG="${sonarQubeOrganizationId}" \
         -v /tmp:/app/data \
-        accuknox/sastjob:1.0.0`
+        accuknox/sastjob:1.0.1`
     }
 
     console.log('Running AccuKnox SAST job...');
@@ -72,13 +77,38 @@ async function runAccuKnoxSAST(sonarQubeUrl: string, sonarQubeToken: string, son
 }
 
 async function uploadReport(accuknoxEndpoint: string, accuknoxTenantId: string, accuknoxToken: string, accuknoxLabel: string): Promise<void> {
+    const REPOSITORY_COMMIT_ID = process.env['BUILD_SOURCEVERSION'] || 'unknown';
+    const REPOSITORY_BRANCH = process.env['BUILD_SOURCEBRANCHNAME'] || 'unknown';
+    const REPOSITORY_URL = process.env['BUILD_REPOSITORY_URI'] || 'unknown';
+    const PIPELINE_URL = process.env.SYSTEM_COLLECTIONURI &&
+        process.env.BUILD_REPOSITORY_NAME &&
+        process.env.BUILD_BUILDID &&
+        process.env.SYSTEM_JOBID &&
+        process.env.SYSTEM_TASKINSTANCEID
+        ? `${process.env.SYSTEM_COLLECTIONURI}/${process.env.BUILD_REPOSITORY_NAME}/_build/results?buildId=${process.env.BUILD_BUILDID}&view=logs&j=${process.env.SYSTEM_JOBID}&t=${process.env.SYSTEM_TASKINSTANCEID}`
+        : "unknown";
+
     const curlCommand = `
+    REPOSITORY_COMMIT_ID="${REPOSITORY_COMMIT_ID}"
+    REPOSITORY_BRANCH="${REPOSITORY_BRANCH}"
+    REPOSITORY_URL="${REPOSITORY_URL}"
+    PIPELINE_URL="${PIPELINE_URL}"
+
     for file in \`ls -1 /tmp/SQ-*.json\`; do \
-        curl --location --request POST \
+        jq --arg branch "$REPOSITORY_BRANCH" --arg commit_id "$REPOSITORY_COMMIT_ID" --arg repo_url "$REPOSITORY_URL" \
+        --arg build_url "$PIPELINE_URL" \
+        '.repo_details = { 
+            "repository_url": $repo_url, 
+            "commit": $commit_id, 
+            "branch": $branch, 
+            "pipeline_url": $build_url 
+        }' "$file" > "$file.tmp" && mv "$file.tmp" "$file.json"
+
+        curl --silent --show-error --fail --location --request POST \
         "https://${accuknoxEndpoint}/api/v1/artifact/?tenant_id=${accuknoxTenantId}&label_id=${accuknoxLabel}&data_type=SQ&save_to_s3=true" \
         --header "Tenant-Id: ${accuknoxTenantId}" \
         --header "Authorization: Bearer ${accuknoxToken}" \
-        --form "file=@$file"; \
+        --form "file=@$file.json"; \
     done
     `;
 
@@ -112,7 +142,7 @@ async function run() {
         }
 
         if (skipSonarQubeScan == false) {
-            await runSonarQubeSAST(sonarQubeUrl, sonarQubeToken, sonarQubeProjectKey, qualityGate);
+            await runSonarQubeSAST(sonarQubeUrl, sonarQubeToken, sonarQubeProjectKey, qualityGate, sonarQubeOrganizationId);
         }
         await runAccuKnoxSAST(sonarQubeUrl, sonarQubeToken, sonarQubeProjectKey, sonarQubeOrganizationId);
         await uploadReport(accuknoxEndpoint, accuknoxTenantId, accuknoxToken, accuknoxLabel);

@@ -1,6 +1,6 @@
 {
     "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
-    "id": "fe2a0581-7f8e-432a-8c10-d1f17cbb3ecc",
+    "id": "6101644e-78a0-4916-a877-1626110645ae",
     "name": "safeer-accuknox-SAST",
     "friendlyName": "AccuKnox SAST",
     "description": "AccuKnox SAST task for scanning source code",
@@ -10,7 +10,7 @@
     "version": {
         "Major": 1,
         "Minor": 0,
-        "Patch": 2
+        "Patch": 16
     },
     "instanceNameFormat": "safeer-accuknox-SAST",
     "inputs": [
@@ -91,7 +91,7 @@
             "type": "string",
             "label": "SonarQube Organization Id (optional)",
             "required": false,
-            "helpMarkDown": "It is required if your are using SonarQubeCloud"
+            "helpMarkDown": "Required only for SonarQube Cloud users."
         }
     ],
     "execution": {
