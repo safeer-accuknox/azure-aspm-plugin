@@ -15,3 +15,9 @@
 
 - **Azure Pipeline**: [AccuKnox Scan Pipeline](https://dev.azure.com/safeer-accuknox/scan)
 - **Azure Plugin**: [AccuKnox Plugin on Visual Studio Marketplace](https://marketplace.visualstudio.com/manage/publishers/safeer-accuknox)
+
+
+## Test Notes
+- Upload it as a private plugin: https://marketplace.visualstudio.com/manage/publishers/safeer-accuknox
+- Share access to the `safeer-accuknox`
+- And test it on dev.azure
