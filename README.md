@@ -20,4 +20,5 @@
 ## Test Notes
 - Upload it as a private plugin: https://marketplace.visualstudio.com/manage/publishers/safeer-accuknox
 - Share access to the `safeer-accuknox`
+- Then install it on https://dev.azure.com/safeer-accuknox/_settings/extensions?tab=shared
 - And test it on dev.azure
